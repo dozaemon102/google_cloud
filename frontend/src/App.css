@@ -1,0 +1,91 @@
+.app {
+  width: min(100% - 32px, 520px);
+  margin: 80px auto;
+  text-align: left;
+}
+
+.app h1 {
+  margin-bottom: 8px;
+}
+
+.description {
+  margin-bottom: 24px;
+}
+
+.search {
+  display: flex;
+  gap: 8px;
+}
+
+.search input,
+.search button {
+  font: inherit;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.search input {
+  min-width: 0;
+  flex: 1;
+  border: 1px solid var(--border);
+  color: var(--text-h);
+  background: var(--bg);
+}
+
+.search button {
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+  background: #e25b31;
+}
+
+.search button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.risk-card {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.risk-card p {
+  margin-bottom: 4px;
+}
+
+.risk-card strong {
+  display: block;
+  font-size: 32px;
+}
+
+.risk-card small {
+  display: block;
+  margin-top: 8px;
+}
+
+.risk-危険 {
+  background: #c8372d;
+}
+
+.risk-厳重警戒 {
+  background: #e97817;
+}
+
+.risk-警戒 {
+  background: #c79913;
+}
+
+.risk-注意 {
+  background: #568a2f;
+}
+
+.risk-ほぼ安全 {
+  background: #287c85;
+}
+
+.error-message {
+  margin-top: 16px;
+  color: #c8372d;
+}

@@ -1,0 +1,68 @@
+name: Deploy Pipeline
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "pipeline/**"
+      - ".github/workflows/deploy-pipeline.yml"
+
+env:
+  PROJECT_ID: test-pro-507713
+  REGION: asia-northeast1
+  COLLECTOR_JOB_NAME: heat-risk-dev-collector
+  ENRICHER_SERVICE_NAME: heat-risk-dev-enricher
+  COLLECTOR_IMAGE_NAME: collector
+  ENRICHER_IMAGE_NAME: enricher
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build and push collector image
+        working-directory: pipeline
+        run: |
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/heat-risk-dev-images/${{ env.COLLECTOR_IMAGE_NAME }}:${{ github.sha }}"
+          docker build -f Dockerfile.collector -t "$IMAGE" .
+          docker push "$IMAGE"
+
+      - name: Deploy collector to Cloud Run
+        run: |
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/heat-risk-dev-images/${{ env.COLLECTOR_IMAGE_NAME }}:${{ github.sha }}"
+          gcloud run jobs update ${{ env.COLLECTOR_JOB_NAME }} \
+            --image "$IMAGE" \
+            --region ${{ env.REGION }} \
+            --project ${{ env.PROJECT_ID }}
+
+      - name: Build and push enricher image
+        working-directory: pipeline
+        run: |
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/heat-risk-dev-images/${{ env.ENRICHER_IMAGE_NAME }}:${{ github.sha }}"
+          docker build -f Dockerfile.enricher -t "$IMAGE" .
+          docker push "$IMAGE"
+
+      - name: Deploy enricher to Cloud Run
+        run: |
+          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/heat-risk-dev-images/${{ env.ENRICHER_IMAGE_NAME }}:${{ github.sha }}"
+          gcloud run services update ${{ env.ENRICHER_SERVICE_NAME }} \
+            --image "$IMAGE" \
+            --region ${{ env.REGION }} \
+            --project ${{ env.PROJECT_ID }}
