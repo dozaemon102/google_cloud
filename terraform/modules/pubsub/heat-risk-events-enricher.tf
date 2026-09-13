@@ -1,6 +1,6 @@
 resource "google_pubsub_subscription" "pubsub_enricher_subscription" {
   name  = var.pubsub_enricher_subscription_name
-  topic = var.pubsub_raw_topic_name
+  topic = google_pubsub_topic.pubsub_events_raw.id
 
   push_config {
     push_endpoint = var.enricher_service_uri
