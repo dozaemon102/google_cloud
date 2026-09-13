@@ -19,3 +19,11 @@ resource "google_service_account_iam_member" "github_wif" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${var.repository_name}"
 }
+
+resource "google_service_account_iam_member" "deployer_act_as_runtime" {
+  for_each = toset(var.runtime_service_account_emails)
+
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${each.value}"
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.deployer.email}"
+}

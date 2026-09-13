@@ -17,3 +17,8 @@ variable "repository_name" {
   type        = string
   description = "GitHub リポジトリ名"
 }
+
+variable "runtime_service_account_emails" {
+  type        = list(string)
+  description = "Cloud Run が実行時に使う SA（deployer に actAs を付与）"
+}
