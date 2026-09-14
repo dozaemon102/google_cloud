@@ -78,7 +78,7 @@ module "github_actions" {
   deployer_account_id = "heat-risk-dev-deployer-sa"
   pool_id             = "heat-risk-dev-github"
   repository_name     = var.repository_name
-  
+
   runtime_service_account_emails = [
     module.iam.api_account_email,
     module.iam.enricher_account_email,

@@ -14,3 +14,11 @@ resource "google_cloud_run_v2_service" "cloud_run_api" {
     }
   }
 }
+
+resource "google_cloud_run_v2_service_iam_member" "api_public_invoker" {
+  project  = var.project_id
+  location = google_cloud_run_v2_service.cloud_run_api.location
+  name     = google_cloud_run_v2_service.cloud_run_api.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}

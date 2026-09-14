@@ -1,0 +1,256 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0">
+  <diagram id="heat-risk-architecture" name="Architecture">
+    <mxGraphModel dx="1664" dy="874" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#1a1a1a;" value="Heat Risk Dashboard - GCP Architecture (dev)" vertex="1">
+          <mxGeometry height="40" width="500" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=12;fontColor=#666666;" value="Project: test-pro-507713 | Region: asia-northeast1" vertex="1">
+          <mxGeometry height="24" width="400" x="40" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="User&#xa;(Browser)" vertex="1">
+          <mxGeometry height="80" width="40" x="60" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="openmeteo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" value="Open-Meteo&#xa;JMA API&#xa;(External)" vertex="1">
+          <mxGeometry height="70" width="140" x="190" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="layer-serving" parent="1" style="swimlane;startSize=24;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;rounded=1;" value="Serving Layer" vertex="1">
+          <mxGeometry height="220" width="360" x="40" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="hosting" parent="layer-serving" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Firebase Hosting&#xa;heat-risk-dev&#xa;.web.app" vertex="1">
+          <mxGeometry height="70" width="150" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="layer-serving" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Cloud Run Service&#xa;heat-risk-dev-api&#xa;(FastAPI)" vertex="1">
+          <mxGeometry height="70" width="150" x="190" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend-label" parent="layer-serving" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#666666;" value="React + Vite&#xa;(Static SPA)" vertex="1">
+          <mxGeometry height="30" width="150" x="20" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="layer-pipeline" parent="1" style="swimlane;startSize=24;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;rounded=1;" value="Data Pipeline" vertex="1">
+          <mxGeometry height="340" width="600" x="420" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="scheduler" parent="layer-pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Cloud Scheduler&#xa;heat-risk-dev-collect-hourly&#xa;(0 * * * * JST)" vertex="1">
+          <mxGeometry height="70" width="180" x="20" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="collector" parent="layer-pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Cloud Run Job&#xa;heat-risk-dev-collector&#xa;(Python)" vertex="1">
+          <mxGeometry height="70" width="180" x="20" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="pubsub-raw" parent="layer-pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Pub/Sub Topic&#xa;heat-risk-dev-events-raw" vertex="1">
+          <mxGeometry height="60" width="180" x="280" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="pubsub-sub" parent="layer-pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Push Subscription&#xa;heat-risk-dev-events-enricher" vertex="1">
+          <mxGeometry height="60" width="180" x="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="enricher" parent="layer-pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Cloud Run Service&#xa;heat-risk-dev-enricher&#xa;(FastAPI)" vertex="1">
+          <mxGeometry height="70" width="180" x="20" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="dlq" parent="layer-pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" value="DLQ Topic&#xa;heat-risk-dev-events-dlq" vertex="1">
+          <mxGeometry height="140" width="60" x="520" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="layer-storage" parent="1" style="swimlane;startSize=24;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;rounded=1;" value="Data Storage" vertex="1">
+          <mxGeometry height="220" width="360" x="1000" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="firestore" parent="layer-storage" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Firestore&#xa;risk_statuses&#xa;(最新状態)" vertex="1">
+          <mxGeometry height="80" width="130" x="30" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bigquery" parent="layer-storage" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="BigQuery&#xa;heat_risk_dev&#xa;(履歴)" vertex="1">
+          <mxGeometry height="80" width="130" x="200" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bq-tables" parent="layer-storage" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=10;fontColor=#666666;" value="risk_assessments&#xa;weather_observations" vertex="1">
+          <mxGeometry height="40" width="150" x="190" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="layer-cicd" parent="1" style="swimlane;startSize=24;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;rounded=1;" value="CI/CD &amp; Registry" vertex="1">
+          <mxGeometry height="290" width="450" x="1080" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="artifact-registry" parent="layer-cicd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Artifact Registry&#xa;heat-risk-dev-images&#xa;(api / collector / enricher)" vertex="1">
+          <mxGeometry height="60" width="300" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="deployer-sa" parent="layer-cicd" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontColor=#666666;" value="deployer-sa (WIF) → build / push / deploy" vertex="1">
+          <mxGeometry height="30" width="300" x="10" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="terraform" parent="layer-cicd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" value="Terraform&#xa;(IaC)" vertex="1">
+          <mxGeometry height="60" width="150" x="300" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="layer-cicd" source="terraform" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=1;dashed=1;" target="artifact-registry">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="160" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e16-label" connectable="0" parent="e16" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="manage infra" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint x="41" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="github" parent="layer-cicd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" value="GitHub Actions&#xa;(WIF Auth)" vertex="1">
+          <mxGeometry height="60" width="150" x="300" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="layer-cicd" source="github" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=1;dashed=1;" target="artifact-registry">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="160" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12-label" connectable="0" parent="e12" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="build &amp; push" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="looker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;dashed=1;dashPattern=8 8;fontColor=#999999;" value="Looker Studio&#xa;(Planned)" vertex="1">
+          <mxGeometry height="60" width="150" x="1180" y="915" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;strokeWidth=2;" target="hosting">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="134.94" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1-label" connectable="0" parent="e1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="HTTPS" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="hosting" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;strokeWidth=2;" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2-label" connectable="0" parent="e2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="fetch API" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;" target="firestore">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="305" y="630" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3-label" connectable="0" parent="e3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="read" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="scheduler" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;strokeWidth=2;" target="collector">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4-label" connectable="0" parent="e4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value=":run (hourly)" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="collector" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;strokeWidth=2;" target="openmeteo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="404.94" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5-label" connectable="0" parent="e5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="GET forecast" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="collector" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;strokeWidth=2;" target="pubsub-raw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6-label" connectable="0" parent="e6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="publish" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="pubsub-raw" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;strokeWidth=2;" target="pubsub-sub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="pubsub-sub" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#9673a6;strokeWidth=2;" target="enricher">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8-label" connectable="0" parent="e8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="push POST /" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="pubsub-sub" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=1;dashed=1;" target="dlq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9-label" connectable="0" parent="e9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#b85450;" value="retry failed" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="enricher" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;" target="firestore">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10-label" connectable="0" parent="e10" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="write latest" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="enricher" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;" target="bigquery">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="580" />
+              <mxPoint x="1265.06" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11-label" connectable="0" parent="e11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="insert history" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="bigquery" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#999999;strokeWidth=1;dashed=1;" target="looker">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1265" y="780" />
+              <mxPoint x="1265" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e17-label" connectable="0" parent="e17" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#999999;" value="analyze" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend" parent="1" style="swimlane;startSize=24;fillColor=#ffffff;strokeColor=#cccccc;fontStyle=1;rounded=1;" value="Legend" vertex="1">
+          <mxGeometry height="100" width="500" x="40" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" parent="legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="" vertex="1">
+          <mxGeometry height="20" width="20" x="20" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" parent="legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" value="Cloud Run" vertex="1">
+          <mxGeometry height="20" width="80" x="50" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" parent="legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="" vertex="1">
+          <mxGeometry height="20" width="20" x="140" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" parent="legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" value="Pub/Sub / AR" vertex="1">
+          <mxGeometry height="20" width="80" x="170" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" parent="legend" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=6;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="28" width="24" x="270" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" parent="legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" value="Datastore" vertex="1">
+          <mxGeometry height="20" width="80" x="300" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" parent="legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="" vertex="1">
+          <mxGeometry height="20" width="20" x="390" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" parent="legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=11;" value="Hosting" vertex="1">
+          <mxGeometry height="20" width="60" x="420" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5" parent="legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontColor=#666666;" value="--- dashed = CI/CD or planned" vertex="1">
+          <mxGeometry height="20" width="200" x="20" y="65" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
